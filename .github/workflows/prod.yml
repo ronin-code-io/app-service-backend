@@ -61,16 +61,16 @@ jobs:
         password: ${{ secrets.DOCKER_ACCESS_TOKEN }}
 
     - name: Build and push Docker images
-      uses: docker/bake-action@v2.3.0
+      uses: docker/bake-action@v4.5.0
       with:
         push: true
-        workdir: ~/app-service-backend
+        workdir: .
         files: |
-          compose.yml
-          compose.override.yml
+          app-service-backend/compose.yml
+          app-service-backend/compose.override.yml
         set: |
-          *.cache-from=type=gha
-          *.cache-to=type=gha,mode=max
+          app-service-backend/*.cache-from=type=gha
+          app-service-backend/*.cache-to=type=gha,mode=max
 
   # deploy:
   #   needs: build
