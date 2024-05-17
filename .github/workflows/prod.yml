@@ -14,20 +14,27 @@ jobs:
       # Checkout code from the repository
     - name: Checkout code
       uses: actions/checkout@v4
+      with:
+        path: ~/app-service-backend
 
     - name: Checkout frontend
       uses: actions/checkout@v4
       with:
         repository: ronin-code-io/app-service-frontend
-        path: src/
+        path: ~/app-service-front/
+    
+    - name: Copy asserts into backend
+      working-directory: ~/
+      run: |
+        mv ~/app-service-front/asserts/* ~/app-service-backend/asserts/
 
       # Cache dependencies to speed up build times
     - name: Cache dependencies
       uses: actions/cache@v3
       with:
         path: |
-          .cargo
-          target/
+          ~/app-service-backend/.cargo
+          ~/app-service-backend/target/
         key: ${{ runner.os }}-cargo-${{ hashFiles('Cargo.lock') }}
         restore-keys: ${{ runner.os }}-cargo-
 
@@ -38,7 +45,7 @@ jobs:
         toolchain: stable
 
     - name: Build and test app-service code
-      working-directory: .
+      working-directory: ~/app-service-backend
       run: |
         cargo build --verbose
         cargo test --verbose
@@ -57,6 +64,7 @@ jobs:
       uses: docker/bake-action@v2.3.0
       with:
         push: true
+        workdir: ~/app-service-backend
         files: |
           compose.yml
           compose.override.yml
