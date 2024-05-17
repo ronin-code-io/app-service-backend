@@ -23,10 +23,10 @@ jobs:
         repository: ronin-code-io/app-service-frontend
         path: ~/app-service-front/
     
-    - name: Copy asserts into backend
+    - name: Copy assets into backend
       working-directory: ~/
       run: |
-        mv ~/app-service-front/asserts/* ~/app-service-backend/asserts/
+        mv -r ~/app-service-front/assets/* ~/app-service-backend/assets/
 
       # Cache dependencies to speed up build times
     - name: Cache dependencies
