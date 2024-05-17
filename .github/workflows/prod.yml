@@ -21,12 +21,12 @@ jobs:
       uses: actions/checkout@v4
       with:
         repository: ronin-code-io/app-service-frontend
-        path: ~/app-service-front/
+        path: ~/app-service-frontend/
     
     - name: Copy assets into backend
       working-directory: ~/
       run: |
-        mv ~/app-service-front/assets/* ~/app-service-backend/assets/
+        mv ~/app-service-frontend/assets ~/app-service-backend
 
       # Cache dependencies to speed up build times
     - name: Cache dependencies
