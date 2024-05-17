@@ -15,13 +15,13 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v4
       with:
-        path: ~/app-service-backend
+        path: ./app-service-backend
 
     - name: Checkout frontend
       uses: actions/checkout@v4
       with:
         repository: ronin-code-io/app-service-frontend
-        path: ~/app-service-frontend/
+        path: ./app-service-frontend/
     
     - name: Copy assets into backend
       working-directory: ~/
@@ -33,8 +33,8 @@ jobs:
       uses: actions/cache@v3
       with:
         path: |
-          ~/app-service-backend/.cargo
-          ~/app-service-backend/target/
+          ./app-service-backend/.cargo
+          ./app-service-backend/target/
         key: ${{ runner.os }}-cargo-${{ hashFiles('Cargo.lock') }}
         restore-keys: ${{ runner.os }}-cargo-
 
@@ -45,7 +45,7 @@ jobs:
         toolchain: stable
 
     - name: Build and test app-service code
-      working-directory: ~/app-service-backend
+      working-directory: ./app-service-backend
       run: |
         cargo build --verbose
         cargo test --verbose
@@ -64,13 +64,13 @@ jobs:
       uses: docker/bake-action@v4.5.0
       with:
         push: true
-        workdir: .
+        workdir: ./app-service-backend
         files: |
-          app-service-backend/compose.yml
-          app-service-backend/compose.override.yml
+          compose.yml
+          compose.override.yml
         set: |
-          app-service-backend/*.cache-from=type=gha
-          app-service-backend/*.cache-to=type=gha,mode=max
+          *.cache-from=type=gha
+          *.cache-to=type=gha,mode=max
 
   # deploy:
   #   needs: build
