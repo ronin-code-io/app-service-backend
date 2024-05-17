@@ -24,7 +24,7 @@ jobs:
         path: ./app-service-frontend/
     
     - name: Copy assets into backend
-      working-directory: ~/
+      working-directory: ./
       run: |
         mv app-service-frontend/assets app-service-backend
 
