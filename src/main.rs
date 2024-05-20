@@ -15,7 +15,7 @@ async fn main() {
         Err(_) => println!("Failed to load env file!"),
     }
 
-    let asserts_dir = env::var("ASSERTS_DIR").unwrap_or_else(|_| "assets".to_owned());
+    let asserts_dir = env::var("ASSETS_DIR").unwrap_or_else(|_| "assets".to_owned());
 
     let app = Router::new()
         .nest_service("/", ServeDir::new(asserts_dir))
