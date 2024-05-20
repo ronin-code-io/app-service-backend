@@ -1,27 +1,24 @@
 extern crate dotenv;
 
-#[macro_use]
-extern crate dotenv_codegen;
-
 use dotenv::dotenv;
 use std::env;
 
-use axum::{
-    http::StatusCode,
-    response::IntoResponse,
-    routing::get,
-    Json, Router,
-};
+use axum::{http::StatusCode, response::IntoResponse, routing::get, Json, Router};
 use axum_extra::extract::CookieJar;
 use serde::Serialize;
 use tower_http::services::ServeDir;
 
 #[tokio::main]
 async fn main() {
-    dotenv().ok();
+    match dotenv() {
+        Ok(_) => println!("Loaded env file."),
+        Err(_) => println!("Failed to load env file!"),
+    }
+
+    let asserts_dir = env::var("ASSERTS_DIR").unwrap_or_else(|_| "/app/asserts".to_owned());
 
     let app = Router::new()
-        .nest_service("/", ServeDir::new(dotenv!("ASSETS_DIR")))
+        .nest_service("/", ServeDir::new(asserts_dir))
         .route("/protected", get(protected));
 
     let listener = tokio::net::TcpListener::bind("0.0.0.0:8000").await.unwrap();
@@ -29,7 +26,6 @@ async fn main() {
     println!("listening on {}", listener.local_addr().unwrap());
     axum::serve(listener, app).await.unwrap();
 }
-
 
 async fn protected(jar: CookieJar) -> impl IntoResponse {
     let jwt_cookie = match jar.get("jwt") {
