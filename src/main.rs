@@ -42,7 +42,7 @@ async fn protected(jar: CookieJar) -> impl IntoResponse {
     });
 
     let auth_hostname = env::var("AUTH_SERVICE_HOST").unwrap_or("0.0.0.0".to_owned());
-    let url = format!("http://{}/verify-token", auth_hostname);
+    let url = format!("https://{}/verify-token", auth_hostname);
 
     let response = match api_client.post(&url).json(&verify_token_body).send().await {
         Ok(response) => response,

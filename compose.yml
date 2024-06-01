@@ -4,6 +4,8 @@ services:
     restart: "always"
     expose:
       - 8000
+    environment:
+      - AUTH_SERVICE_HOST=${AUTH_SERVICE_HOST}
     labels:
       traefik.enable: "true"
 
