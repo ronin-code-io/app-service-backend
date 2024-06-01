@@ -36,19 +36,18 @@ async fn protected(jar: CookieJar) -> impl IntoResponse {
     };
 
     let api_client = reqwest::Client::builder().build().unwrap();
+    let token = jwt_cookie.value();
 
     let verify_token_body = serde_json::json!({
-        "token": &jwt_cookie.value(),
+        "token": token,
     });
 
-    let auth_hostname = env::var("AUTH_SERVICE_HOST").unwrap_or("0.0.0.0".to_owned());
-    let url = format!("https://{}/verify-token", auth_hostname);
+    let auth_hostname = env::var("AUTH_SERVICE_HOST").unwrap_or("auth-service:3000".to_owned());
+    let url = format!("http://{}/verify-token", auth_hostname);
 
     let response = match api_client.post(&url).json(&verify_token_body).send().await {
         Ok(response) => response,
-        Err(_) => {
-            return StatusCode::INTERNAL_SERVER_ERROR.into_response();
-        }
+        Err(_) => return StatusCode::INTERNAL_SERVER_ERROR.into_response(),
     };
 
     match response.status() {
